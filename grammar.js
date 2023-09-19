@@ -5,10 +5,18 @@ module.exports = grammar({
    source_file: $ => repeat($._definition),
 
     _definition: $ => choice(
+      $.if_statement,
+      $.if_statement2,
       $.variable_declaration,
       $.include_statement,
       $.main_function,
-      $.function_definition
+      $.function_definition,
+      $.expression
+    ),
+
+    include_statement: $ => seq(
+      'inc',
+      $._expression
     ),
 
     variable_declaration: $ => choise(
@@ -24,6 +32,30 @@ module.exports = grammar({
         '=',
         $._expression
       )
+    ),
+
+    if_statement: $ => seq(
+      'if',
+      '(',
+      $._expression,
+      ')',
+      '{',
+      $._expression,
+      '}'
+    ),
+
+    if_statement2: $ => seq(
+      'if',
+      '(',
+      $._expression,
+      ')',
+      '{',
+      $._expression,
+      '}',
+      'else',
+      '{',
+      $._expression,
+      '}',
     )
 
     main_function: $ => seq(
@@ -76,7 +108,10 @@ module.exports = grammar({
       $.identifier,
       $.number,
       $.string,
-      $.float
+      $.float,
+      $.if_statement,
+      $.if_statement2,
+      $.variable_declaration,
       // TODO: other kinds of expressions
     ),
 
